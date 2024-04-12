@@ -9,12 +9,12 @@ phases:
   build:
     commands:
       - echo Building Docker image...
-      - docker build -t assignment3 .
-      - docker tag assignment3 533267226679.dkr.ecr.us-east-1.amazonaws.com/assignment3:ver1 
+      - docker build -t finaltest .
+      - docker tag finaltest 533267226679.dkr.ecr.us-east-1.amazonaws.com/finaltest:ver1 
   post_build:
     commands:
       - echo Pushing Docker image to Amazon ECR...
-      - docker push 533267226679.dkr.ecr.us-east-1.amazonaws.com/assignment3:ver1
+      - docker push 533267226679.dkr.ecr.us-east-1.amazonaws.com/finaltest:ver1
       - echo Image pushed to Amazon ECR
       # Output the ECR image URL
       - IMAGE_URL=$(aws ecr describe-images --repository-name assignment3 --region $AWS_DEFAULT_REGION --query 'images[0].imageUri' --output text)
