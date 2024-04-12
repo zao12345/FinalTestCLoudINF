@@ -336,7 +336,7 @@ Resources:
                 awslogs-stream-prefix: osimade
                 awslogs-region: !Ref AWS::Region
           PortMappings:
-            - ContainerPort: 5000
+            - ContainerPort: 3000
       RequiresCompatibilities:
         - FARGATE
 
