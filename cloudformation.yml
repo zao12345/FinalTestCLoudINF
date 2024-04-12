@@ -250,6 +250,75 @@ Resources:
       Protocol: HTTP
       VpcId: !Ref OsimadeVPC
 
+  AutoScalingRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - ecs-tasks.amazonaws.com
+            Action:
+              - 'sts:AssumeRole'
+      Path: '/'
+      Policies:
+        - PolicyName: root
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action:
+                  - ecs:DescribeServices
+                  - ecs:UpdateService
+                  - cloudwatch:DeleteAlarms
+                  - cloudwatch:DescribeAlarms
+                  - cloudwatch:PutMetricAlarm
+                Resource: '*'
+
+  AutoScalingTarget:
+    Type: AWS::ApplicationAutoScaling::ScalableTarget
+    Properties:
+      MinCapacity: 1
+      MaxCapacity: 5  # Adjusted maximum capacity to 5 as per your requirement
+      ResourceId: !Join
+        - '/'
+        - - service
+          - !Ref OsimadeCluster
+          - !GetAtt OsimadeService.Name
+      ScalableDimension: ecs:service:DesiredCount
+      ServiceNamespace: ecs
+      RoleARN: !GetAtt AutoScalingRole.Arn
+
+  ScaleOutPolicy:
+    Type: AWS::ApplicationAutoScaling::ScalingPolicy
+    Properties:
+      PolicyName: ScaleOutPolicy
+      PolicyType: StepScaling
+      ScalingTargetId: !Ref AutoScalingTarget
+      StepScalingPolicyConfiguration:
+        AdjustmentType: ChangeInCapacity
+        Cooldown: 120  
+        MetricAggregationType: Average
+        StepAdjustments:
+          - MetricIntervalLowerBound: 90
+            ScalingAdjustment: 3  
+
+  ScaleInPolicy:
+    Type: AWS::ApplicationAutoScaling::ScalingPolicy
+    Properties:
+      PolicyName: ScaleInPolicy
+      PolicyType: StepScaling
+      ScalingTargetId: !Ref AutoScalingTarget
+      StepScalingPolicyConfiguration:
+        AdjustmentType: ChangeInCapacity
+        Cooldown: 120  
+        MetricAggregationType: Average
+        StepAdjustments:
+          - MetricIntervalUpperBound: 50
+            ScalingAdjustment: -2  
+
   OsimadeTaskDefinition:
     Type: AWS::ECS::TaskDefinition
     Properties:
@@ -259,7 +328,7 @@ Resources:
       ExecutionRoleArn: !Ref OsimadeExecutionRole
       ContainerDefinitions:
         - Name: osimade-container
-          Image: !Sub "${AWS::AccountId}.dkr.ecr.${AWS::Region}.amazonaws.com/assignment3:ver1"
+          Image: !Sub "${AWS::AccountId}.dkr.ecr.${AWS::Region}.amazonaws.com/finaltest:ver1"
           LogConfiguration:
               LogDriver: awslogs
               Options:
