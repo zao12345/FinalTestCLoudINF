@@ -336,7 +336,7 @@ Resources:
                 awslogs-stream-prefix: osimade
                 awslogs-region: !Ref AWS::Region
           PortMappings:
-            - ContainerPort: 3000
+            - ContainerPort: 5000
       RequiresCompatibilities:
         - FARGATE
 
@@ -356,10 +356,10 @@ Resources:
       LaunchType: FARGATE
       NetworkConfiguration: 
         AwsvpcConfiguration:
-          AssignPublicIp: ENABLED
+          AssignPublicIp: DISABLED
           Subnets:
-            - !Ref PublicSubnet1
-            - !Ref PublicSubnet2
+            - !Ref PrivateSubnet1
+            - !Ref PrivateSubnet2
           SecurityGroups:
             - !GetAtt OsimadeContainerSecurityGroup.GroupId
       LoadBalancers:
