@@ -177,8 +177,8 @@ Resources:
       VpcId: !Ref OsimadeVPC
       SecurityGroupIngress:
         - IpProtocol: tcp
-          FromPort: 3000
-          ToPort: 3000
+          FromPort: 5000
+          ToPort: 5000
           CidrIp: 0.0.0.0/0
         - IpProtocol: tcp
           FromPort: 80
@@ -190,8 +190,8 @@ Resources:
     DependsOn: OsimadeContainerSecurityGroup
     Properties:
       IpProtocol: tcp
-      FromPort: 3000
-      ToPort: 3000
+      FromPort: 5000
+      ToPort: 5000
       SourceSecurityGroupId: !Ref OsimadeContainerSecurityGroup
       GroupId: !Ref OsimadeLoadBalancerSecurityGroup
 
@@ -214,8 +214,8 @@ Resources:
     Type: AWS::EC2::SecurityGroupEgress
     Properties:
       IpProtocol: tcp
-      FromPort: 3000
-      ToPort: 3000
+      FromPort: 5000
+      ToPort: 5000
       DestinationSecurityGroupId: !Ref OsimadeContainerSecurityGroup
       GroupId: !Ref OsimadeLoadBalancerSecurityGroup
 
@@ -365,7 +365,7 @@ Resources:
       LoadBalancers:
         - TargetGroupArn: !Ref OsimadeTargetGroup
           ContainerName: osimade-container
-          ContainerPort: 3000
+          ContainerPort: 5000
 
   OsimadeCluster:
     Type: AWS::ECS::Cluster
