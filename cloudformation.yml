@@ -303,7 +303,7 @@ Resources:
         MetricAggregationType: Average
         StepAdjustments:
           - MetricIntervalLowerBound: 90
-            ScalingAdjustment: 3  
+            ScalingAdjustment: 3
 
   ScaleInPolicy:
     Type: AWS::ApplicationAutoScaling::ScalingPolicy
